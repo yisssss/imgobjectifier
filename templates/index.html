@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Image Objectifier</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="scroll box">
+      <div class="container">
+        <div class="left-panel">
+          <div class="original-header">
+            <h3>Original Image</h3>
+            <div class="icon-buttons">
+              <label for="imgInput">
+                <img
+                  src="{{ url_for('static', filename='icons/image-icon.png') }}"
+                  alt="Image Input"
+                  style="cursor: pointer"
+                />
+              </label>
+              <input
+                type="file"
+                id="imgInput"
+                accept="image/*"
+                style="display: none"
+                onchange="handleImageUpload(event)"
+              />
+            </div>
+          </div>
+          <div class="original-image">
+            <img id="originalPreview" style="display: none" />
+          </div>
+        </div>
+        <div class="center-panel">
+          <div class="processed-header">
+            <h3>Processed Image</h3>
+            <div class="icon-buttons">
+              <img
+                onclick="downloadResult()"
+                src="{{ url_for('static', filename='icons/download-icon.png') }}"
+                alt="Install"
+              />
+              <img
+                src="{{ url_for('static', filename='icons/wide-icon.png') }}"
+                alt="Expand"
+              />
+            </div>
+          </div>
+          <div class="processed-image-wrapper">
+          <div
+            class="processed-image scroll-container"
+          >
+            <!-- 텍스트 메시지 -->
+            <p id="loadingText" class="status-text loading">Loading...</p>
+            <p id="errorText" class="status-text error"></p>
+
+            <!-- 이미지 레이어 -->
+            <img id="baseImage" class="image-layer base" />
+            <img id="saliency" class="image-layer saliency" />
+            <img id="viewpoint" class="image-layer viewpoint" />
+            <img id="centerline" class="image-layer centerline" />
+            <img id="focusmask" class="image-layer focusmask" />
+          </div>
+          </div>
+        </div>
+        <div class="right-panel">
+          <h3>Graphic filter</h3>
+          <ul class="filter-list">
+            <li class="filter-item" data-mode="saliency" onclick="showOverlay('saliency')">
+              Saliency map
+            </li>
+            <li class="filter-item" data-mode="viewpoint" onclick="showOverlay('viewpoint')">
+              Viewpoints
+            </li>
+            <li class="filter-item" data-mode="centerline" onclick="showOverlay('centerline')">
+              Center Lines
+            </li>
+            <li class="filter-item" data-mode="focusmask" onclick="showOverlay('focusmask')">
+              Focused part
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer">
+        <div class="title">Image Objectifier</div>
+        <div class="desc">
+          Lorem Ipsum is simply dummy text of the printing and typesetting
+          industry. Lorem Ipsum has been the industry's standard dummy text...
+        </div>
+      </div>
+    </div>
+    <script src="{{ url_for('static', filename='main.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+  </body>
+</html>
