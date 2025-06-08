@@ -539,7 +539,7 @@ function checkLoaded() {
     slideStep();
 
     initialized = true;
-    setInterval(slideStep, 4000);
+    setInterval(slideStep, 6000);
   }
 }
 
