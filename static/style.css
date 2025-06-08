@@ -7,7 +7,7 @@
 
 @font-face {
   font-family: "JRK";
-  src: url("/JRK.otf") format("opentype");
+  src: url("/static/JRK.otf") format("opentype");
   font-weight: normal;
   font-style: normal;
 }
