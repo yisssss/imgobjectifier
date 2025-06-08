@@ -29,6 +29,7 @@ def run_deepgaze(image_path, save_folder):
     generate_centerline_overlay(image, save_folder, image_path)
     generate_focusmask_overlay(image, norm_mask, save_folder, image_path)
     generate_saliency_overlay(norm_mask, save_folder, image_path)
+    generate_shape_overlay(image, save_folder, image_path)
 
 
     return True  # ✅ 결과 경로는 반환하지 않음
@@ -227,3 +228,25 @@ def draw_dominant_directions_with_arrows(image, min_angle_diff=20, arrow_spacing
             cv2.arrowedLine(out, (ax, ay), (tx, ty), (255, 255, 255, 255), 3, tipLength=0.4)
 
     return out  # BGRA: 배경 없음, 선만 있음
+
+
+def generate_shape_overlay(image, save_folder, image_path):
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    blur = cv2.GaussianBlur(gray, (5, 5), 0)
+    _, thresh = cv2.threshold(blur, 100, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
+    contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+    # 투명 배경 이미지 생성 (4채널 BGRA)
+    h, w = image.shape[:2]
+    result = np.zeros((h, w, 4), dtype=np.uint8)
+
+    for c in contours:
+        area = cv2.contourArea(c)
+        if area > 300:
+            # 선만 그리기 (초록색 + 알파채널=255)
+            cv2.drawContours(result, [c], -1, (0, 255, 0, 255), 2)
+
+    save_transparent_overlay(result, save_folder, image_path, "shapes")
+
+

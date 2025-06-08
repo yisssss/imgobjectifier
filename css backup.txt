@@ -1,0 +1,558 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --black: #282828;
+  --darkgray: #545656;
+  --lightgray: #b6babc;
+  --white: #f7f7f7;
+  --red: #f5451d;
+}
+
+body,
+html {
+  height: 100%;
+  font-family: "Space Grotesk", Arial, sans-serif;
+  font-weight: 400;
+  background-color: var(--white);
+}
+
+.container,
+.footer {
+  display: flex;
+  flex-direction: row;
+  height: 88vh;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto; /* 가운데 정렬 */
+  user-select: none; /* Standard syntax */
+}
+
+.left-panel h3,
+.center-panel h3,
+.right-panel h3 {
+  padding: 1rem;
+  padding-left: 2.4rem;
+  background-color: var(--black);
+}
+
+.left-panel h3 {
+  background-color: var(--white);
+}
+
+.left-panel {
+  flex: 1;
+}
+
+.original-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--white);
+}
+
+.center-panel {
+  flex: 2.2;
+  background: var(--black);
+  color: var(--white);
+  display: flex;
+  flex-direction: column;
+}
+
+.processed-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--black);
+}
+
+.icon-buttons {
+  background: transparent;
+  display: flex;
+  gap: 1rem;
+  padding-right: 1rem;
+}
+
+.icon-buttons img {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.icon-buttons img:hover {
+  transform: scale(1.2);
+}
+
+.right-panel {
+  flex: 0.8;
+  background: var(--black);
+  color: var(--white);
+  min-height: 48vh;
+}
+
+.original-image {
+  width: 100%;
+  background-color: var(--lightgray);
+  aspect-ratio: 1 / 1; /* 초기 정사각형 */
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  position: relative;
+  transition: height 0.3s ease;
+}
+
+.original-image.loaded {
+  aspect-ratio: auto; /* 이미지가 로딩되면 비율 해제 */
+  height: auto;
+}
+
+.original-image img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.processed-image-wrapper {
+  height: 80vh; /* or any height you want */
+  overflow-y: auto;
+  position: relative;
+}
+
+.processed-image {
+  width: 100%;
+  background-color: var(--darkgray);
+  aspect-ratio: 1 / 1; /* 초기 정사각형 */
+  display: flex;
+  position: relative;
+  overflow: hidden;
+  transition: height 0.3s ease;
+}
+
+.processed-image.loaded {
+  aspect-ratio: auto; /* 이미지가 로딩되면 비율 해제 */
+  height: auto;
+}
+
+.processed-image img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* 텍스트 공통 스타일 */
+.status-text {
+  display: none;
+  position: absolute;
+
+  padding: 1rem;
+  padding-left: 2.4rem;
+
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.status-text.loading {
+  color: var(--lightgray);
+}
+
+.status-text.error {
+  color: var(--red);
+}
+
+/* 이미지 레이어 공통 */
+.image-layer {
+  width: 100%;
+  display: none;
+  position: relative;
+}
+
+/* 이미지별 z-index */
+.image-layer.baseImage {
+  z-index: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-color: var(--darkgray);
+}
+
+.image-layer.saliency {
+  z-index: 3;
+  opacity: 70%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.image-layer.viewpoint {
+  z-index: 4;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.image-layer.centerline {
+  z-index: 5;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.image-layer.focusmask {
+  z-index: 2;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.image-layer.shapes {
+  z-index: 2;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* 실제 이미지가 들어오면 placeholder 제거 */
+.original-image.has-image,
+.processed-image.has-image {
+  border: none;
+  background-size: cover;
+  background-position: center;
+  color: transparent;
+}
+
+.filter-list {
+  font-size: 1em;
+  list-style: none;
+}
+
+.filter-item {
+  padding: 0.4rem;
+  padding-left: 2.4rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  background-color: var(--black);
+}
+
+.filter-item:hover {
+  background-color: rgba(142, 54, 34);
+}
+
+.filter-item.selected {
+  background-color: var(--red);
+  font-weight: 600;
+}
+
+.footer {
+  height: 12vh;
+  flex-direction: row;
+  background-color: var(--white);
+  color: var(--black);
+}
+
+.title {
+  padding-top: 1rem;
+  font-weight: 700;
+  font-size: 2em;
+  flex: 1;
+}
+
+.desc {
+  padding-top: 1rem;
+  font-weight: 300;
+  font-size: 0.9em;
+  flex: 3;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .left-panel,
+  .center-panel,
+  .right-panel {
+    width: 100%;
+  }
+
+  .original-image {
+    width: 100%;
+    height: 32vh;
+  }
+
+  .center-panel {
+    height: auto;
+  }
+
+  .footer {
+    flex-direction: column;
+    gap: 0.5rem;
+    height: 18vh;
+    position: fixed;
+    bottom: 0;
+  }
+
+  .desc {
+    margin-left: 1rem;
+    padding-top: 0;
+    max-width: calc(100% - 2rem);
+  }
+}
+
+@media (max-width: 1280px) {
+  .footer {
+    padding-bottom: 3rem;
+  }
+
+  .title {
+    padding-left: 1rem;
+  }
+
+  .desc {
+    padding-right: 1rem;
+  }
+}
+
+.icon-wrapper {
+  position: relative;
+
+  z-index: 100;
+  background-color: black;
+}
+
+.icon-wrapper.plus {
+
+  top: 50%;
+  left: 25%;
+}
+
+.icon-wrapper.download {
+
+  top: 50%;
+  left: 75%;
+}
+
+.icon-group {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  cursor: pointer;
+  background-color: transparent;
+}
+
+.icon-line {
+  position: absolute;
+  height: 0;
+  border: 2px solid var(--red);
+  transition: all 0.4s ease;
+}
+
+/* Line default (plus state) */
+.plus .line-1 {
+  width: 48px;
+  top: 50%;
+  left: 0%;
+  transform: rotate(90deg);
+}
+
+.plus .line-2 {
+  width: 48px;
+  top: 50%;
+  left: 0%;
+
+  transform: rotate(90deg);
+}
+
+.plus .line-3 {
+  width: 24px;
+  left: 0px;
+  top: 24px;
+  transform: rotate(180deg);
+}
+
+.plus .line-4 {
+  width: 14px;
+  left: 32px;
+  top: 24px;
+  transform: rotate(180deg);
+}
+
+/* Load 상태일 때 위치 변경 */
+.plusLoad .line-1 {
+    width: 36px;
+  left: -18px;
+  top: 30px;
+  
+  transform: rotate(90deg);
+}
+
+.plusLoad .line-2 {
+  width: 46px;
+  left: 50%;
+  top: 50%;
+  transform: rotate(90deg);
+}
+
+.plusLoad .line-3 {
+  width: 48px;
+  left: 0px;
+  top: 46px;
+
+  transform: rotate(180deg);
+}
+
+.plusLoad .line-4 {
+  width: 32px;
+  left: 17px;
+  top: 0%;
+  transform: rotate(180deg);
+}
+
+/*=========================*/
+/*=========================*/
+/*=========================*/
+
+.download .line-1 {
+  width:18px;
+  left: -7px;
+  top:37px;
+  transform: rotate(90deg);
+}
+
+.download .line-2 {
+  width:18px;
+  left: 38px;
+  top:37px;
+  transform: rotate(90deg);
+}
+
+.download .line-3 {
+  width:12px;
+  left: 28px;
+  top:24px;
+  transform: rotate(135deg);
+}
+
+.download .line-4 {
+  width:36px;
+  left: 10px;
+  top:44px;
+  transform: rotate(-180deg);
+}
+
+.download .line-5 {
+  width:34px;
+  left: 8px;
+  top:16px;
+  transform: rotate(90deg);
+}
+
+.download .line-6 {
+  width:20px;
+  left: 9px;
+  top:26px;
+  transform: rotate(45deg);
+}
+
+
+/*=========================*/
+
+.download-load .line-1 {
+  width: 36px;
+  left: -18px;
+  top: 30px;
+  transform: rotate(90deg);
+}
+
+.download-load .line-2 {
+  width: 46px;
+  left: 50%;
+  top: 50%;
+  transform: rotate(90deg);
+}
+
+.download-load .line-3 {
+
+  width: 46px;
+  left: 50%;
+  top: 50%;
+  transform: rotate(90deg);
+
+}
+
+.download-load .line-4 {
+    width: 48px;
+  left: 0px;
+  top: 46px;
+  transform: rotate(-180deg);
+}
+
+.download-load .line-5 {
+
+  width: 32px;
+  left: 17px;
+  top: 0%;
+  transform: rotate(180deg);
+}
+
+.download-load .line-6 {
+
+  width: 36px;
+  left: -18px;
+  top: 30px;
+  transform: rotate(90deg);
+
+}
+
+/*=========================*/
+
+.download-check .line-1 {
+  width: 36px;
+  left: -18px;
+  top: 30px;
+  transform: rotate(90deg);
+}
+
+.download-check .line-2 {
+  width: 46px;
+  left: 50%;
+  top: 50%;
+  transform: rotate(90deg);
+}
+
+.download-check .line-3 {
+
+  width:23px;
+  left: 19px;
+  top:22px;
+  transform: rotate(135deg);
+
+}
+
+.download-check .line-4 {
+    width: 48px;
+  left: 0px;
+  top: 46px;
+  transform: rotate(-180deg);
+}
+
+.download-check .line-5 {
+
+  width: 32px;
+  left: 17px;
+  top: 0%;
+  transform: rotate(180deg);
+}
+
+.download-check .line-6 {
+  width:14px;
+  left: 7px;
+  top:30px;
+  transform: rotate(45deg);
+
+}
